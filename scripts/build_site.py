@@ -119,16 +119,22 @@ class NoteLinksExtension(Extension):
         )
 
 
-def reader_markup(markup: str) -> str:
-    markup = re.sub(
-        r"<pre><code(?:\s[^>]*)?>.*?</code></pre>",
-        lambda match: (
-            '<div class="code-block"><button class="code-copy" type="button" '
-            'data-copy-code hidden>Copy</button>' + match[0] + "</div>"
-        ),
-        markup,
-        flags=re.DOTALL,
+def reader_code_block(match: re.Match[str]) -> str:
+    if 'class="language-mermaid"' in (match[1] or ""):
+        return (
+            '<figure class="lesson-diagram" data-mermaid-diagram>'
+            '<div class="diagram-view" role="region" aria-label="Diagram" tabindex="0" hidden></div>'
+            '<details class="diagram-source"><summary>View diagram source</summary>'
+            f'{match[0]}</details></figure>'
+        )
+    return (
+        '<div class="code-block"><button class="code-copy" type="button" '
+        f'data-copy-code hidden>Copy</button>{match[0]}</div>'
     )
+
+
+def reader_markup(markup: str) -> str:
+    markup = re.sub(r"<pre><code(\s[^>]*)?>.*?</code></pre>", reader_code_block, markup, flags=re.DOTALL)
     return markup.replace(
         "<table>", '<div class="table-scroll" role="region" aria-label="Study sessions" '
         'tabindex="0"><table>'
@@ -159,7 +165,7 @@ def reader_links(page: Page, curriculum: Page, lessons: dict[int, Page]) -> str:
 def render_page(page, curriculum, lessons, routes, template, output):
     parser = Markdown(
         extensions=["fenced_code", "tables", "toc", NoteLinksExtension(page, routes, lessons)],
-        extension_configs={"toc": {"toc_depth": "2-2", "slugify": section_id}},
+        extension_configs={"toc": {"toc_depth": "2-3", "slugify": section_id}},
     )
     preface = ""
     if page.preface:

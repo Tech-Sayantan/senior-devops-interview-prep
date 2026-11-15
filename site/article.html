@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="${description}">
-  <meta name="theme-color" content="#101b23">
+  <meta name="theme-color" content="#f8f9ff">
   <title>${title} · DevOps Field Guide</title>
-  <link rel="stylesheet" href="${assets}/site.css">
-  <script src="${assets}/site.js" defer></script>
+  <link rel="stylesheet" href="${assets}/site.css?v=2">
+  <script src="${assets}/site.js?v=2" defer></script>
 </head>
 <body class="article-page">
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -44,10 +44,14 @@
 
     <div class="container reading-layout">
       <aside class="reading-aside">
-        <nav aria-label="On this page">
+        <nav class="desktop-contents" aria-label="On this page">
           <p class="section-kicker">On this page</p>
           ${toc}
         </nav>
+        <details class="mobile-contents">
+          <summary>On this page</summary>
+          <nav aria-label="On this page">${toc}</nav>
+        </details>
       </aside>
       <article class="prose" aria-labelledby="article-title">
         ${content}

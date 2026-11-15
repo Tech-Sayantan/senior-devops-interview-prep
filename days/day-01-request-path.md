@@ -8,6 +8,19 @@ Say you type `https://orders.example.com/health` on your Mac. You know exactly w
 
 For the kind of HTTPS connection we’ll run today, the order is **DNS → TCP → TLS → HTTP**. Let’s follow it, and at each step imagine what you’d see if it broke.
 
+```mermaid
+flowchart TB
+    accTitle: Four stages of a new HTTPS request over TCP
+    accDescr: DNS finds the address, TCP connects to its port, TLS verifies and secures that connection, and HTTP requests the path and gets a response.
+    DNS["DNS · Find an IP address"]
+    TCP["TCP · Connect to that IP and port"]
+    TLS["TLS · Verify identity and encrypt"]
+    HTTP["HTTP · Request a path and get a reply"]
+    DNS --> TCP --> TLS --> HTTP
+```
+
+Think of the four boxes as checks you can tick off. If a new connection gets stuck at TLS, you already know it made it past the address lookup and the TCP connection. That gives you a smaller problem to investigate.
+
 ## DNS · Where do I send this?
 
 Your Mac has the name `orders.example.com`. To connect, it needs an IP address. It asks for one through **DNS**, and a resolver either gives it a cached answer or looks it up.
@@ -25,6 +38,19 @@ Let’s say DNS worked. Your Mac now tries `192.0.2.44` on port `443`.
 Why the port? One machine can run a website on `443`, an SSH service on `22`, and a test app on `8765`. The IP gets you to the machine or network endpoint. The port identifies which service you’re trying to reach. A process that’s waiting for connections on an address and port is **listening**.
 
 TCP starts with three short messages. You’ll hear them called **SYN, SYN-ACK, ACK**. Read them as “I’d like to connect,” “I received that and I’m ready,” and “I received your reply.” Now the two sides have a connection they can use to exchange data.
+
+```mermaid
+sequenceDiagram
+    accTitle: TCP handshake between the Mac and server port 443
+    accDescr: The Mac sends SYN, the server replies with SYN-ACK, and the Mac sends ACK to establish a TCP connection.
+    participant Mac
+    participant Server as Server port 443
+    Mac->>Server: SYN
+    Server-->>Mac: SYN-ACK
+    Mac->>Server: ACK
+```
+
+When you see `Connected` in the lab, this TCP setup has worked. You can then look for what happened during TLS and HTTP.
 
 Two failures can look similar to a user who just says “the site is down”:
 
@@ -47,19 +73,19 @@ Think about a browser that loads `/health` but gives you `404` for `/heath`. You
 
 ## Interview questions · Let’s work through the answers
 
-**1. `dig` returns the right IP. Why might the site still be down?**
+### 1. `dig` returns the right IP. Why might the site still be down?
 
 You’ve answered “where should I try?” The machine could still have nothing listening on `443`, the certificate could be expired, or the app could respond with an error. Run `curl -v` and follow the output until something goes wrong. If the problem is only happening inside a pod or on a VPN, test there too. A DNS answer from your Mac may differ from the one the failing workload gets.
 
-**2. I can ping the server. Why can’t I open the website?**
+### 2. I can ping the server. Why can’t I open the website?
 
 Ping asks for a different kind of reply. The server can answer ping while its web service is stopped or its web port is blocked. Try the URL the user is trying. That tests the actual hostname, service port, and web request.
 
-**3. HTTPS works with the hostname. Why does it complain when I put the IP directly in the URL?**
+### 3. HTTPS works with the hostname. Why does it complain when I put the IP directly in the URL?
 
 You changed the identity you asked curl to verify. The certificate may cover `orders.example.com`, while the URL now asks curl to verify `192.0.2.44`. If you’re testing a specific IP for that service, `curl --resolve` lets you choose the address while keeping the original hostname in the URL. This is handy when you’re testing whether a DNS change will send traffic to the right new endpoint. [Everything curl on selecting an address](https://everything.curl.dev/usingcurl/connections/name.html)
 
-**4. If I got a `404`, can I rule out DNS?**
+### 4. If I got a `404`, can I rule out DNS?
 
 You know the request reached *an* HTTP responder. Think about what happens if a stale DNS answer sends you to an older load balancer that serves other pages but has no `/health` route. You can get a perfectly valid `404` from the wrong place. Check the hostname, where it resolved, and whose logs show the request.
 
@@ -76,6 +102,21 @@ Because you’re looking at **two different requests**.
 - The **customer’s browser → checkout** request got far enough for checkout to send an HTTP response.
 - The **checkout → DynamoDB** request got stuck trying to find DynamoDB’s address.
 
+```mermaid
+flowchart TB
+    accTitle: Example checkout returns HTTP 503 after a DynamoDB DNS lookup fails
+    accDescr: The customer reaches checkout. Checkout asks its DNS resolver for DynamoDB and gets no address, then returns HTTP 503 to the customer.
+    Browser["Customer browser"]
+    Checkout["Checkout API"]
+    Resolver["DNS resolver"]
+    Browser -->|"Checkout request"| Checkout
+    Checkout -->|"Find DynamoDB"| Resolver
+    Resolver -.->|"No address"| Checkout
+    Checkout -.->|"HTTP 503"| Browser
+```
+
+This is the example checkout app during a failure like the AWS incident. The `503` comes from checkout. Its outbound request stopped at the DNS lookup, before it could open a connection to DynamoDB.
+
 So where do you test? **From the affected checkout workload.** Look up the exact DynamoDB name there and compare it with a name you know works from the same workload. Check whether other workloads in that region see the same thing, and compare the timing with AWS Health. After recovery, check that checkout can make a real DynamoDB call and that customers can finish placing orders. Seeing an IP in a DNS answer is only the first part of confirming recovery.
 
 ### The browser shows `502`, but the certificate is fine
@@ -83,6 +124,20 @@ So where do you test? **From the affected checkout workload.** Look up the exact
 Here’s an everyday deployment problem. Your browser connects securely to an AWS Application Load Balancer. After a configuration change, the load balancer starts sending `502`. The app behind it is still running.
 
 There are two connections here too. The browser’s HTTPS connection ends at the load balancer. The load balancer then makes **its own** connection to the app. Suppose the target group was switched to HTTPS, but the app still speaks plain HTTP on port `8080`. The browser can pass its TLS check while the load balancer’s TLS handshake to the app fails.
+
+```mermaid
+flowchart TB
+    accTitle: HTTPS to the load balancer succeeds and HTTPS to the HTTP target fails
+    accDescr: The browser connects securely to the load balancer. The load balancer attempts HTTPS to a plain-HTTP app on port 8080 and returns an HTTP 502 to the browser.
+    Browser["Browser"]
+    LoadBalancer["Application Load Balancer"]
+    App["Plain HTTP app on port 8080"]
+    Browser -->|"HTTPS works"| LoadBalancer
+    LoadBalancer -.->|"TLS handshake fails"| App
+    LoadBalancer -->|"Returns HTTP 502"| Browser
+```
+
+When someone says “TLS works,” ask *between which two components?* The browser checked the load balancer’s certificate on the first connection. The mismatch is on the second connection.
 
 How do you prove that’s the issue? Check what protocol and port the target group uses. From inside the network, confirm what the app actually responds to on `8080`. If the target group change introduced the mismatch, restore the known-good protocol setting and check the original customer URL and the `502` rate. In the lab below, you’ll see this same protocol mismatch happen on your Mac. [AWS on load balancer errors](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-troubleshooting.html)
 
@@ -143,5 +198,11 @@ curl -sSi --max-time 3 http://127.0.0.1:8765/health
 ```
 
 You should get a connection failure, usually curl error `(7)`. You asked for the same file that worked before. This time Python is gone, so there’s nobody on that port to answer. In tab 1, clean up with `rm "$lab_dir/health"` and then `rmdir "$lab_dir"`.
+
+### Quick interview rehearsal
+
+Say this happened after a deploy. One curl trace shows `Connected`, then a certificate error. Another shows `Connected`, then `< HTTP/1.1 404`. Explain out loud where you’d start looking for each failure. For each one, name the last step you can prove worked and one check you’d run next.
+
+For the first trace, start with the certificate presented by the endpoint you reached. For the second, an HTTP responder understood the request well enough to answer. Check the hostname and path it received, then find the component that returned the `404`. If you can explain why your first check changes between the two traces, you understand the request path well enough to frame your own answer.
 
 **When you run it, send me what you saw.** Explain the `404`, the TLS error, and the refusal in whatever words make sense to you. I’ll help you check the reasoning, then push the completed Day 1 notes to your private repo.
