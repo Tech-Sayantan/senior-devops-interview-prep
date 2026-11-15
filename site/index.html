@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A 60-day senior AWS DevOps interview study plan with practical labs, production scenarios, and mock interviews.">
+  <meta name="theme-color" content="#101b23">
+  <title>DevOps Field Guide · Senior DevOps interview prep</title>
+  <link rel="stylesheet" href="./assets/site.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="site-header">
+    <div class="container navbar">
+      <a class="brand" href="./" aria-current="page">
+        <span class="brand-mark" aria-hidden="true">›<i></i></span>
+        <span>DevOps Field Guide</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="./curriculum/">Curriculum</a>
+        <a href="./days/day-01-request-path/">Day 1</a>
+        <a class="nav-github" href="https://github.com/Tech-Sayantan/senior-devops-interview-prep">GitHub <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>2027 interview track</p>
+          <h1 id="page-title">Senior DevOps<br><em>interview prep.</em></h1>
+          <p class="hero-description">Build the reasoning you’ll need to run systems on AWS, diagnose production issues, and explain your decisions in an interview.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="./days/day-01-request-path/">Start with Day 1 <span aria-hidden="true">→</span></a>
+            <a class="button button-secondary" href="./curriculum/">View curriculum</a>
+          </div>
+        </div>
+        <figure class="hero-art">
+          <img src="./assets/cloud-infrastructure.webp" alt="A rendered arrangement of connected cloud infrastructure on a dark surface" fetchpriority="high">
+        </figure>
+      </div>
+      <ul class="container hero-details" aria-label="Study plan details">
+        <li><strong>60 days</strong><span>Step-by-step curriculum</span></li>
+        <li><strong>60–75 min</strong><span>Typical daily session</span></li>
+        <li><strong>Production practice</strong><span>Hands-on labs and mock interviews</span></li>
+      </ul>
+    </section>
+
+    <section class="container featured-section" aria-labelledby="featured-title">
+      <div class="featured-copy">
+        <p class="section-kicker">Day 1 · Networking</p>
+        <h2 id="featured-title">Follow an HTTPS request</h2>
+        <p>See what happens between typing a URL and getting a response. Then use the last successful step to narrow down a real outage.</p>
+        <a class="text-link" href="./days/day-01-request-path/">Read the lesson and run the Mac lab <span aria-hidden="true">→</span></a>
+      </div>
+      <figure class="request-diagram">
+        <figcaption>From hostname to response</figcaption>
+        <ol class="request-steps">
+          <li><strong>DNS</strong><span>Find an address</span></li>
+          <li><strong>TCP</strong><span>Open a connection</span></li>
+          <li><strong>TLS</strong><span>Verify and encrypt</span></li>
+          <li><strong>HTTP</strong><span>Get a response</span></li>
+        </ol>
+      </figure>
+    </section>
+
+    <section class="roadmap-section" aria-labelledby="roadmap-title">
+      <div class="container">
+        <div class="section-intro">
+          <div>
+            <p class="section-kicker">Curriculum</p>
+            <h2 id="roadmap-title">The 60-day study plan</h2>
+            <p>Start with Linux and networking. Build up to operating AWS infrastructure, deploying safely, and working through incidents under pressure.</p>
+          </div>
+          <a class="text-link" href="./curriculum/">Open the day-by-day plan <span aria-hidden="true">→</span></a>
+        </div>
+
+        <ol class="roadmap-grid">
+          <li><a class="roadmap-item" href="./curriculum/#days-1-7-linux-and-troubleshooting">
+            <span class="roadmap-range">Days 1–7</span><h3>Linux and troubleshooting</h3><p>DNS, TCP, TLS, HTTP, Linux, Git, Bash, and Python</p>
+          </a></li>
+          <li><a class="roadmap-item" href="./curriculum/#days-8-14-aws-architecture-and-networking">
+            <span class="roadmap-range">Days 8–14</span><h3>AWS architecture</h3><p>IAM, multi-account design, VPCs, hybrid networks, and service choices</p>
+          </a></li>
+          <li><a class="roadmap-item" href="./curriculum/#days-15-21-terraform">
+            <span class="roadmap-range">Days 15–21</span><h3>Terraform</h3><p>Modules, remote state, locking, imports, drift, and plan reviews</p>
+          </a></li>
+          <li><a class="roadmap-item" href="./curriculum/#days-22-28-ansible-and-enterprise-integration">
+            <span class="roadmap-range">Days 22–28</span><h3>Ansible and integration</h3><p>Repeatable playbooks, rolling patches, ESB, and message delivery</p>
+          </a></li>
+          <li><a class="roadmap-item" href="./curriculum/#days-29-35-docker-cicd-and-release-security">
+            <span class="roadmap-range">Days 29–35</span><h3>Delivery and release security</h3><p>Docker, Jenkins, GitHub Actions, artifact provenance, and rollback</p>
+          </a></li>
+          <li><a class="roadmap-item" href="./curriculum/#days-36-42-kubernetes-eks-and-argo-cd">
+            <span class="roadmap-range">Days 36–42</span><h3>Kubernetes, EKS, and Argo CD</h3><p>Scheduling, traffic, cluster operations, and GitOps</p>
+          </a></li>
+          <li><a class="roadmap-item" href="./curriculum/#days-43-49-observability-sre-and-databases">
+            <span class="roadmap-range">Days 43–49</span><h3>Observability, SRE, and data</h3><p>Telemetry, SLOs, incidents, databases, and recovery</p>
+          </a></li>
+          <li><a class="roadmap-item" href="./curriculum/#days-50-56-security-platform-design-finops-and-senior-ownership">
+            <span class="roadmap-range">Days 50–56</span><h3>Platform engineering and cost</h3><p>Security, self-service design, FinOps, and senior ownership</p>
+          </a></li>
+          <li><a class="roadmap-item" href="./curriculum/#days-57-60-full-interview-practice">
+            <span class="roadmap-range">Days 57–60</span><h3>Mock interviews</h3><p>Architecture, incident response, live coding, and a targeted retest</p>
+          </a></li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">›<i></i></span><span>DevOps Field Guide</span></a>
+      <a href="https://github.com/Tech-Sayantan/senior-devops-interview-prep">View the source on GitHub <span aria-hidden="true">↗</span></a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="${description}">
+  <meta name="theme-color" content="#101b23">
+  <title>${title} · DevOps Field Guide</title>
+  <link rel="stylesheet" href="${assets}/site.css">
+  <script src="${assets}/site.js" defer></script>
+</head>
+<body class="article-page">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="site-header">
+    <div class="container navbar">
+      <a class="brand" href="${home}">
+        <span class="brand-mark" aria-hidden="true">›<i></i></span>
+        <span>DevOps Field Guide</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="${curriculum}"${curriculum_current}>Curriculum</a>
+        <a href="${first_lesson}"${lesson_current}>Day ${first_day}</a>
+        <a class="nav-github" href="${repository}">GitHub <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="article-hero" aria-labelledby="article-title">
+      <div class="container article-hero-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="${home}">Home</a></li>
+            ${breadcrumb}
+            <li aria-current="page">${current_label}</li>
+          </ol>
+        </nav>
+        <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>${kicker}</p>
+        ${preface}
+        <h1 class="article-title" id="article-title">${title}</h1>
+        ${subtitle}
+      </div>
+    </section>
+
+    <div class="container reading-layout">
+      <aside class="reading-aside">
+        <nav aria-label="On this page">
+          <p class="section-kicker">On this page</p>
+          ${toc}
+        </nav>
+      </aside>
+      <article class="prose" aria-labelledby="article-title">
+        ${content}
+        <nav class="article-footer-nav" aria-label="Continue studying">
+          ${reader_links}
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <a class="brand" href="${home}"><span class="brand-mark" aria-hidden="true">›<i></i></span><span>DevOps Field Guide</span></a>
+      <a href="${source_url}">View this guide on GitHub <span aria-hidden="true">↗</span></a>
+    </div>
+  </footer>
+</body>
+</html>

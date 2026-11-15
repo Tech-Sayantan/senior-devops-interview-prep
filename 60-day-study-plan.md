@@ -19,7 +19,7 @@ An order-processing API is moving to AWS. Its legacy ERP and enterprise service 
 1. Explain the concept in everyday English, with an example of when you’d need it at work.
 2. Practice direct interview questions and answers, followed by a worked production scenario.
 3. Try a fresh question in your own words. For hands-on days, run the small exercise and bring back the output.
-4. Review why the answer works, where it needs more evidence, and how to explain the trade-off. The completed notes go into the private GitHub repository in English, with reference links.
+4. Review why the answer works, where it needs more evidence, and how to explain the trade-off. Study notes are published in English, with reference links.
 
 For scenario practice, score each area from 0 to 2. Did you scope the customer impact? Did your check distinguish between plausible causes? Was the change safe to try? Did you verify recovery? Did you communicate ownership and the next action? Use the same criteria across the course to see what improves.
 
