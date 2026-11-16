@@ -85,7 +85,7 @@ For scenario practice, score each area from 0 to 2. Did you scope the customer i
 
 | Day | Topic and interview practice |
 | --- | --- |
-| 29 | **Docker.** Decide when to use a multi-stage build, read image layers and cache behavior, and diagnose startup and shutdown issues. |
+| 29 | **CI/CD and Docker artifacts.** Trace a commit through PR checks, image building, and promotion. Use digests to verify what reached production. Explore multi-stage builds, image layers and caching, and startup and shutdown issues. |
 | 30 | **Jenkins and Groovy.** Write and review a Declarative `Jenkinsfile`. Explain agents, stages, credentials scope, post conditions, and when to use a Shared Library. |
 | 31 | **GitHub Actions.** Compare runners and reusable workflows. Read an AWS OIDC trust policy and scope deployment permissions to the intended repo and environment. |
 | 32 | **Artifact trust.** Distinguish image digests, dependency scans, software bills of materials (SBOMs), signatures, and provenance. Explain what must pass before promoting an image in ECR. |
